@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root1!password
+      MYSQL_DATABASE: magento
+      MYSQL_USER: magento
+      MYSQL_PASSWORD: magento1!password
+    ports:
+      - "3309:3306" # MySQL will be accessible on host port 3309
+    volumes:
+      - db_data:/var/lib/mysql
+
+  opensearch:
+    image: opensearchproject/opensearch:2.13.0
+    environment:
+      - discovery.type=single-node
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - plugins.security.disabled=true
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+
+  php:
+    image: php:8.2-fpm
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - mysql
+      - opensearch
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8070:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - php
+
+volumes:
+  db_data:
+  opensearch_data:
