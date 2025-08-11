@@ -19,8 +19,8 @@ services:
       - plugins.security.disabled=true
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Open@search12!3
     ports:
-      - "9200:9200"
-      - "9600:9600"
+      - "9201:9200"
+      - "9601:9600"
     volumes:
       - opensearch_data:/usr/share/opensearch/data
 
