@@ -7,7 +7,7 @@ services:
       MYSQL_USER: magento
       MYSQL_PASSWORD: magento1!password
     ports:
-      - "3309:3306" # MySQL will be accessible on host port 3309
+      - "3307:3306" # MySQL will be accessible on host port 3309
     volumes:
       - db_data:/var/lib/mysql
 
