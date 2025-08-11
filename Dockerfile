@@ -17,6 +17,8 @@ RUN apt-get update && \
         libcurl4-openssl-dev \
         libgd-dev \
         zlib1g-dev \
+        wget \
+        cron \
         && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
@@ -24,3 +26,16 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Debug: Check if Composer is installed and in PATH
+RUN which composer && composer --version
+
+# Set recommended PHP configuration for Magento
+RUN echo "memory_limit = 2G" >> /usr/local/etc/php/conf.d/magento.ini \
+    && echo "max_execution_time = 3600" >> /usr/local/etc/php/conf.d/magento.ini \
+    && echo "zlib.output_compression = On" >> /usr/local/etc/php/conf.d/magento.ini
+
+WORKDIR /var/www/html
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html
